@@ -1,0 +1,638 @@
+{
+	"info": {
+		"_postman_id": "b3e04739-16a2-4a0b-9df0-inventario-topicos",
+		"name": "API Catálogo de Inventario - Proyecto Final Tópicos",
+		"description": "Colección completa para pruebas de backend de la API REST de Catálogo de Inventario en Django REST Framework.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "e55bb2f0086484cf295f9ce0b0baf93ad9608f4b",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Autenticación",
+			"item": [
+				{
+					"name": "Registro de Usuario (Register)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"nuevo_usuario\",\n    \"email\": \"usuario@test.com\",\n    \"first_name\": \"Juan\",\n    \"last_name\": \"Pérez\",\n    \"password\": \"PasswordSeguro123!\",\n    \"password2\": \"PasswordSeguro123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/register/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "register", ""]
+						}
+					}
+				},
+				{
+					"name": "Obtener Token (Login / Custom Token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set('token', jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin12345\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/custom-token/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "custom-token", ""]
+						}
+					}
+				},
+				{
+					"name": "Ver Mi Perfil (/api/me/)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/me/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "me", ""]
+						}
+					}
+				},
+				{
+					"name": "Actualizar Mi Perfil (/api/me/ PATCH)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"Administrador Principal\",\n    \"last_name\": \"Inventario\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/me/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "me", ""]
+						}
+					}
+				},
+				{
+					"name": "Renovar Token (/api/reset-token/)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reset-token/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reset-token", ""]
+						}
+					}
+				},
+				{
+					"name": "Cerrar Sesión (/api/logout/)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/logout/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "logout", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Categorías",
+			"item": [
+				{
+					"name": "Listar Categorías",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/categorias/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categorias", ""]
+						}
+					}
+				},
+				{
+					"name": "Buscar Categoría por Texto",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/categorias/?search=Tecnología",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categorias", ""],
+							"query": [
+								{
+									"key": "search",
+									"value": "Tecnología"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Crear Categoría",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"codigo\": \"CAT-SEG\",\n    \"nombre\": \"Seguridad y Vigilancia\",\n    \"descripcion\": \"Cámaras IP, grabadores NVR, sensores y alarmas.\",\n    \"activo\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/categorias/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categorias", ""]
+						}
+					}
+				},
+				{
+					"name": "Detalle de Categoría (con productos anidados)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/categorias/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categorias", "1", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Proveedores",
+			"item": [
+				{
+					"name": "Listar Proveedores",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/proveedores/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "proveedores", ""]
+						}
+					}
+				},
+				{
+					"name": "Crear Proveedor",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre_empresa\": \"HP Enterprise México\",\n    \"rfc_o_identificacion\": \"HPE151101ABC\",\n    \"contacto_nombre\": \"Laura Sánchez\",\n    \"email\": \"ventas@hpe-mex.com\",\n    \"telefono\": \"+52 55 1234 5678\",\n    \"direccion\": \"Polanco, CDMX\",\n    \"sitio_web\": \"https://www.hpe.com\",\n    \"activo\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/proveedores/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "proveedores", ""]
+						}
+					}
+				},
+				{
+					"name": "Buscar Proveedor por RFC o Nombre",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/proveedores/?search=Dell",
+							"host": ["{{base_url}}"],
+							"path": ["api", "proveedores", ""],
+							"query": [
+								{
+									"key": "search",
+									"value": "Dell"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Catálogo de Productos (Filtros, Búsqueda, Anidados)",
+			"item": [
+				{
+					"name": "Listar Todos los Productos (con Serializers Anidados)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/productos/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "productos", ""]
+						}
+					}
+				},
+				{
+					"name": "Filtro por Categoría (?categoria=1)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/productos/?categoria=1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "productos", ""],
+							"query": [
+								{
+									"key": "categoria",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filtro por Proveedor (?proveedor=1)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/productos/?proveedor=1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "productos", ""],
+							"query": [
+								{
+									"key": "proveedor",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Búsqueda Textual (?search=Makita o ?search=Laptop)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/productos/?search=Makita",
+							"host": ["{{base_url}}"],
+							"path": ["api", "productos", ""],
+							"query": [
+								{
+									"key": "search",
+									"value": "Makita"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filtro por Rango de Precios (?min_precio=5000&max_precio=20000)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/productos/?min_precio=5000&max_precio=20000",
+							"host": ["{{base_url}}"],
+							"path": ["api", "productos", ""],
+							"query": [
+								{
+									"key": "min_precio",
+									"value": "5000"
+								},
+								{
+									"key": "max_precio",
+									"value": "20000"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filtro de Productos con Stock Bajo (?bajo_stock=true)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/productos/?bajo_stock=true",
+							"host": ["{{base_url}}"],
+							"path": ["api", "productos", ""],
+							"query": [
+								{
+									"key": "bajo_stock",
+									"value": "true"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Endpoint Especial: Productos Bajo Stock (/api/productos/bajo_stock/)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/productos/bajo_stock/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "productos", "bajo_stock", ""]
+						}
+					}
+				},
+				{
+					"name": "Crear Nuevo Producto (con relaciones)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sku\": \"ACC-LOG-MX3\",\n    \"nombre\": \"Mouse Logitech MX Master 3S\",\n    \"descripcion\": \"Mouse inalámbrico premium con sensor de 8000 DPI y clic silencioso.\",\n    \"precio\": \"2199.00\",\n    \"costo\": \"1650.00\",\n    \"stock_actual\": 14,\n    \"stock_minimo\": 5,\n    \"categoria\": 1,\n    \"proveedor\": 1,\n    \"activo\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/productos/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "productos", ""]
+						}
+					}
+				},
+				{
+					"name": "Ver Detalle de Producto por ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/productos/1/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "productos", "1", ""]
+						}
+					}
+				},
+				{
+					"name": "Ajustar Stock Directo (/api/productos/1/ajustar_stock/)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tipo_movimiento\": \"ENTRADA\",\n    \"cantidad\": 5,\n    \"motivo\": \"Entrada de almacén por reabastecimiento\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/productos/1/ajustar_stock/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "productos", "1", "ajustar_stock", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Administración de Existencias (Movimientos)",
+			"item": [
+				{
+					"name": "Listar Historial de Movimientos de Inventario",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/movimientos/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "movimientos", ""]
+						}
+					}
+				},
+				{
+					"name": "Registrar Entrada de Stock (ENTRADA)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"producto\": 2,\n    \"tipo_movimiento\": \"ENTRADA\",\n    \"cantidad\": 10,\n    \"motivo\": \"Recepción de pedido con factura #7784\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/movimientos/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "movimientos", ""]
+						}
+					}
+				},
+				{
+					"name": "Registrar Salida de Stock (SALIDA)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"producto\": 2,\n    \"tipo_movimiento\": \"SALIDA\",\n    \"cantidad\": 3,\n    \"motivo\": \"Venta en tienda #8831\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/movimientos/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "movimientos", ""]
+						}
+					}
+				},
+				{
+					"name": "Validación de Salida con Stock Insuficiente (Error 400 esperado)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"producto\": 6,\n    \"tipo_movimiento\": \"SALIDA\",\n    \"cantidad\": 999,\n    \"motivo\": \"Prueba de validación: debe rechazar porque no hay stock\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/movimientos/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "movimientos", ""]
+						}
+					}
+				}
+			]
+		}
+	]
+}
